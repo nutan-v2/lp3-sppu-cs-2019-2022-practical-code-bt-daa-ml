@@ -1,0 +1,65 @@
+#include <iostream>
+#include <vector>
+#include <algorithm>
+using namespace std;
+
+struct Job {
+    int id;       // Job ID
+    int deadline; // Deadline for the job
+    int profit;   // Profit if the job is completed on time
+};
+
+// Comparator function to sort jobs based on profit in descending order
+bool compare(Job a, Job b) {
+    return a.profit > b.profit;
+}
+
+void jobSequencing(vector<Job> &jobs, int n) {
+    // Sort the jobs based on profit in descending order
+    sort(jobs.begin(), jobs.end(), compare);
+
+    // To keep track of free time slots
+    vector<bool> slot(n, false);
+    // To store the result (sequence of jobs)
+    vector<int> result(n, -1);
+
+    // Iterate through all jobs
+    for (int i = 0; i < jobs.size(); i++) {
+        // Find a free slot for this job (starting from its deadline)
+        for (int j = min(n - 1, jobs[i].deadline - 1); j >= 0; j--) {
+            if (!slot[j]) { // If the slot is free
+                slot[j] = true;
+                result[j] = jobs[i].id;
+                break;
+            }
+        }
+    }
+
+    // Print the result
+    cout << "The sequence of jobs to maximize profit is:" << endl;
+    for (int i = 0; i < n; i++) {
+        if (result[i] != -1) {
+            cout << "Job " << result[i] << " ";
+        }
+    }
+    cout << endl;
+}
+
+int main() {
+    int n;
+    cout << "Enter the number of jobs: ";
+    cin >> n;
+
+    vector<Job> jobs(n);
+
+    // Get the details of each job from the user
+    for (int i = 0; i < n; i++) {
+        cout << "Enter the details of job " << (i + 1) << " (ID, Deadline, Profit): ";
+        cin >> jobs[i].id >> jobs[i].deadline >> jobs[i].profit;
+    }
+
+    // Call the job sequencing function
+    jobSequencing(jobs, n);
+
+    return 0;
+}

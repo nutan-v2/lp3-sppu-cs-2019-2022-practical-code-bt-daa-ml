@@ -1,0 +1,52 @@
+import numpy as np
+import pandas as pd
+import matplotlib.pyplot as plt
+from sklearn.feature_extraction.text import CountVectorizer
+from sklearn.model_selection import GridSearchCV
+from sklearn import svm
+
+data = pd.read_csv('emails.csv')
+
+data.info()
+data.head()
+
+# data preprocessing
+X = data.drop(columns=['Email No.', 'spam']) # remove non-numeric columns
+y = data['spam'] # target variable
+
+from sklearn.model_selection import train_test_split
+from sklearn.neighbors import KNeighborsClassifier
+from sklearn.svm import SVC
+from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_score, roc_auc_score, confusion_matrix
+
+# Split the data into training and testing sets
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+
+# train K-Nearest neighbors (k-nn) model
+knn_model = KNeighborsClassifier(n_neighbors = 5)
+knn_model.fit(X_train, y_train)
+knn_predictions = knn_model.predict(X_test)
+
+# train svm model
+svm_model = SVC()
+svm_model.fit(X_train, y_train)
+svm_predictions = svm_model.predict(X_test)
+
+# model evalution
+def evaluate_model(predictions, model_name):
+    accuracy = accuracy_score(y_test, predictions)
+    precision = precision_score(y_test, predictions)
+    recall = recall_score(y_test, predictions)
+    f1 = f1_score(y_test, predictions)
+    roc_auc = roc_auc_score(y_test, predictions)
+    print("Performance metrics for {model_name}: ")
+    print("Accuracy: {accuracy}")
+    print("Precision: {precision}")
+    print(f"Recall: {recall}")
+    print(f"F1-Score: {f1}")
+    print(f"ROC AUC: {roc_auc}")
+    print("Confusion Matrix:")
+    print(confusion_matrix(y_test, predictions))
+
+evaluate_model(knn_predictions, "K-Nearest Neighbors")
+evaluate_model(svm_predictions, "Support Vector Machine")

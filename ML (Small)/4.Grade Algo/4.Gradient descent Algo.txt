@@ -1,0 +1,38 @@
+#cell1
+# Starting values and parameters
+start_x = 2              
+rate = 0.01              
+precision = 0.00001       
+step_size = 1             
+max_iteration = 10000    
+iterations = 0           
+
+# Derivative of the function f(x) = (x + 3)^2 is f'(x) = 2 * (x + 3)
+df = lambda x: 2 * (x + 3)
+
+
+gd = []
+
+
+#cell2
+# Gradient Descent Loop
+while step_size > precision and iterations < max_iteration:
+    prev = start_x                # Store the current x value (previous x)
+    start_x -= rate * df(prev)    # Update x using the gradient descent formula
+    step_size = abs(prev - start_x)  # Calculate the absolute step size
+    iterations += 1               # Increment iteration count
+      
+    # Append the current x value to gd for tracking
+    gd.append(start_x)
+
+
+#cell3
+# Output results after loop finishes
+print(f"Local minimum at x ≈ {start_x}")
+print(f"Function value at this point f(x) ≈ {(start_x + 3) ** 2}")
+print(f"Total iterations: {iterations}")
+
+
+#cell4
+import seaborn as sns
+sns.scatterplot(gd)

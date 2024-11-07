@@ -1,0 +1,92 @@
+// #include <iostream>
+// #include <algorithm> // For std::copy
+// #include <cstdlib>   // For rand()
+// #include <ctime>     // For seeding rand()
+// #include <chrono>    // For timing
+#include <bits/stdc++.h>
+using namespace std;
+
+// Deterministic Partition function
+int deterministicPartition(int arr[], int low, int high) {
+    int pivot = arr[high];
+    int i = low - 1;
+    for (int j = low; j < high; j++) {
+        if (arr[j] <= pivot) {
+            i++;
+            swap(arr[i], arr[j]);
+        }
+    }
+    swap(arr[i + 1], arr[high]);
+    return i + 1;
+}
+
+// Deterministic QuickSort
+void deterministicQuickSort(int arr[], int low, int high) {
+    if (low < high) {
+        int pivotIndex = deterministicPartition(arr, low, high);
+        deterministicQuickSort(arr, low, pivotIndex - 1);
+        deterministicQuickSort(arr, pivotIndex + 1, high);
+    }
+}
+
+// Randomized Partition function
+int randomizedPartition(int arr[], int low, int high) {
+    int randomPivotIndex = low + rand() % (high - low + 1);
+    swap(arr[randomPivotIndex], arr[high]);
+    return deterministicPartition(arr, low, high);
+}
+
+// Randomized QuickSort
+void randomizedQuickSort(int arr[], int low, int high) {
+    if (low < high) {
+        int pivotIndex = randomizedPartition(arr, low, high);
+        randomizedQuickSort(arr, low, pivotIndex - 1);
+        randomizedQuickSort(arr, pivotIndex + 1, high);
+    }
+}
+
+// Function to generate a random array of given size
+void generateRandomArray(int arr[], int size) {
+    for (int i = 0; i < size; i++) {
+        arr[i] = rand() % 10000; // Random integers between 0 and 9999
+    }
+}
+
+// Utility function to print the array (optional)
+void printArray(int arr[], int size) {
+    for (int i = 0; i < size; i++) {
+        cout << arr[i] << " ";
+    }
+    cout << endl;
+}
+
+int main() {
+    srand(time(0)); // Seed for random number generation
+
+    int size = 5000; // Size of the array for analysis
+    int arr1[size], arr2[size];
+    generateRandomArray(arr1, size);
+    copy(arr1, arr1 + size, arr2); // Copy arr1 into arr2 for comparison
+
+    // print sorted array deterministic method:
+    //printArray(arr1,size);
+
+    // Measure time for Deterministic QuickSort
+    auto start = chrono::high_resolution_clock::now();
+    deterministicQuickSort(arr1, 0, size - 1);
+    auto end = chrono::high_resolution_clock::now();
+    auto duration = chrono::duration_cast<chrono::microseconds>(end - start).count();
+    cout << "Time taken by Deterministic QuickSort: " << duration / 1e6 << " ms" << endl;
+
+    // print sorted array non deterministic method:
+    //printArray(arr1,size);
+
+    // Measure time for Randomized QuickSort
+    start = chrono::high_resolution_clock::now();
+    randomizedQuickSort(arr2, 0, size - 1);
+    end = chrono::high_resolution_clock::now();
+    duration = chrono::duration_cast<chrono::microseconds>(end - start).count();
+    cout << "Time taken by Randomized QuickSort: " << duration / 1e6 << " ms" << endl;
+
+    return 0;
+}

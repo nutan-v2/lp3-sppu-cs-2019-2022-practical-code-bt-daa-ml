@@ -1,0 +1,56 @@
+#include <iostream>
+using namespace std;
+
+// Function to print Fibonacci numbers using recursion
+void printFibonacciRecursive(int n, int n1 = 0, int n2 = 1)
+{
+    if (n <= 0)
+        return;                                  // Base case: if n is zero or negative, do nothing
+    cout << n1 << " ";                           // Print the current Fibonacci number
+    printFibonacciRecursive(n - 1, n2, n1 + n2); // Recursive call with next numbers
+}
+
+// Function to print Fibonacci numbers without recursion
+void printFibonacciNonRecursive(int n)
+{
+    int n1 = 0, n2 = 1, nextTerm; // Initialize first two Fibonacci numbers
+
+
+    for (int i = 1; i <= n; ++i)
+    {
+        if (i == 1){
+            cout << n1 << " "; // Print first number
+            continue;
+        }
+        if (i == 2){
+        cout << n2 << " "; // Print second number
+        continue;
+
+        }
+        nextTerm = n1 + n2;      // Calculate next Fibonacci number
+        cout << nextTerm << " "; // Print the next Fibonacci number
+        n1 = n2;           // Update n1 and n2
+        n2 = nextTerm;
+    }
+}
+
+int main()
+{
+    int n;
+
+    // Input the number of Fibonacci numbers to print
+    cout << "Enter the number of Fibonacci numbers to print: ";
+    cin >> n;
+
+    // Print using recursion
+    cout << "Fibonacci (Recursive): ";
+    printFibonacciRecursive(n);
+    cout << endl;
+
+    // Print using non-recursion
+    cout << "Fibonacci (Non-Recursive): ";
+    printFibonacciNonRecursive(n);
+    cout << endl;
+
+    return 0;
+}
